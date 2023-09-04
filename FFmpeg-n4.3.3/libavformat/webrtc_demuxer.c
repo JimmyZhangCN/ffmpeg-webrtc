@@ -488,7 +488,8 @@ static int webrtc_read_header(AVFormatContext *s)
     s->flags |= AVFMT_FLAG_GENPTS;
     s->ctx_flags |= AVFMTCTX_NOHEADER;
     s->fps_probe_size = 0;
-    s->max_analyze_duration = FFMAX(s->max_analyze_duration, 5*AV_TIME_BASE);
+    //s->max_analyze_duration = FFMAX(s->max_analyze_duration, 5*AV_TIME_BASE);
+    s->max_analyze_duration = AV_TIME_BASE; //修改为1秒的，分析时间，如果只有纯音频，分析时间太长
     s->probesize = FFMAX(s->probesize, 512*1024);
     h->avctx = s;
     h->video_stream_index_in = 0;
