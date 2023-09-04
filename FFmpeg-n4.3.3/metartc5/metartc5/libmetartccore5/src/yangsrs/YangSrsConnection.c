@@ -36,7 +36,7 @@ int32_t yang_sdp_querySrs(YangRtcSession* session,SrsSdpResponseType* srs,int32_
 	int32_t err=Yang_Ok;
 
 	char* sdp=(char*)calloc(1,Yang_SDP_BUFFERLEN);
-	if(yang_http_post(sdp,ip, port, purl, (uint8_t*)psdp, strlen(psdp))){
+	if(yang_https_post(sdp,ip, port, purl, (uint8_t*)psdp, strlen(psdp))){
 		yang_free(sdp);
 		return yang_error_wrap(1,"query srs sdp failure!");
 	}
@@ -110,11 +110,14 @@ int32_t yang_srs_getSignal(YangRtcSession* session,SrsSdpResponseType* srs,char*
 	char qt = '"';
 	YangStreamOptType role=session->context.streamConfig->streamOptType;
 	const char* roleStr=role==Yang_Stream_Play?"play":"publish";
+	// sprintf(srsSdp,
+	// 		"{%capi%c:%chttp://%s:%d/rtc/v1/%s/%c,%cstreamurl%c:%cwebrtc://%s:%d/%s/%s%c,%cclientip%c:null,%csdp%c:%c%s%c}",
+	// 		qt, qt, qt, session->context.streamConfig->remoteIp, session->context.streamConfig->remotePort,roleStr ,qt, qt, qt, qt, session->context.streamConfig->remoteIp,
+	// 		session->context.streamConfig->remotePort, session->context.streamConfig->app, session->context.streamConfig->stream, qt, qt, qt, qt, qt, qt, sdp, qt);
 	sprintf(srsSdp,
-			"{%capi%c:%chttp://%s:%d/rtc/v1/%s/%c,%cstreamurl%c:%cwebrtc://%s:%d/%s/%s%c,%cclientip%c:null,%csdp%c:%c%s%c}",
-			qt, qt, qt, session->context.streamConfig->remoteIp, session->context.streamConfig->remotePort,roleStr ,qt, qt, qt, qt, session->context.streamConfig->remoteIp,
+			"{%capi%c:%chttps://%s:%d/rtc/v1/%s/%c,%cstreamurl%c:%cwebrtc://%s:%d/%s/%s%c,%cclientip%c:null,%csdp%c:%c%s%c}",
+			qt, qt, qt, session->context.streamConfig->remoteIp, session->context.streamConfig->remotePort, roleStr, qt, qt, qt, qt, session->context.streamConfig->remoteIp,
 			session->context.streamConfig->remotePort, session->context.streamConfig->app, session->context.streamConfig->stream, qt, qt, qt, qt, qt, qt, sdp, qt);
-
 
 	char apiurl[256] ;
 	memset(apiurl,0,sizeof(apiurl));
